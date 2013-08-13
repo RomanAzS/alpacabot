@@ -9,7 +9,9 @@ def wiki(msg):
     response = response.read()
     response = response.split("<p>")
     res = response[1].split("p>")
-    if "may refer to" in res[0] or "can refer to" in res[0]:
+    
+    
+    if "may refer to:" in res[0] or "can refer to:" in res[0] or "may also refer to:" in res[0]:
         res = res[0]
         res = re.sub("<.*?>", '', res)
         return "%s http://en.wikipedia.org/wiki/%s" % (res.strip("/<"), msg)
