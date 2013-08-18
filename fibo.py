@@ -13,7 +13,8 @@ def fib2(n): # return Fibonacci series up to n
 	result = []
 	a = 0
         b = 1
-	while b <= n:
+	while b <= n and b <= 1134903170:
 		result.append(b)
 		a, b = b, a+b
+        if n >= 1836311903: result.append("<truncated>")
 	return result
