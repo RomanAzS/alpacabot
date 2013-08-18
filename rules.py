@@ -3,7 +3,7 @@ import random
 def rulesOfTheInternet(msg):
     target = open("rules.txt")
     targ = target.read()
-    targ.close()
+    target.close()
     ruleslist = targ.split("\n")
     if msg.isdigit() == True:
         msg = int(msg)
