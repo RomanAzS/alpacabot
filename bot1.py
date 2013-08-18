@@ -4,10 +4,10 @@ from twisted.python import log
 from string import Template
 from bs import insults, azi_insults, philosophies
 from fibo import fib2
-from wiki import wiki as wiki
-from notes import notes as notes
+from wiki import wiki 
+from notes import notes 
 from rules import rulesOfTheInternet as rules
-from convert import convert as convert
+from convert import convert 
 from dict import dictionary as dict
 from tz import tz 
 from wz import wz
@@ -22,12 +22,13 @@ class Bot(irc.IRCClient):
     nickname = "alpacabot" # Nickname of the bot
     realname = "Hamster Bot" # Real name field, can contain spaces
     username = "HamsterBot" # Username/Ident
-    chanlist = ["#TheGrammarNaziBoners", "#LGBTeens", "#Programming"]
+    chanlist = ["#TheGrammarNaziBoners", "#LGBTeens", "#programming", "#nu", "#SHARKY'sDrugDen"]
     azi = ["hamster", "hammy", "azi", "legolas", "smeagol", "dinoshi", "faramir", "thranduil", "sharky"]
     opers = ["hamster", "hammy", "azi", "legolas", "smeagol", "dinoshi", "neoinr", "neoite", "ritsuka", "kvasir"]
     opersh = ["hamster@haters.gon.hate","hamster@alpa.ca",  "azi@haters.gon.hate", "Azi@F2D81641.F516A8C9.8D5014A8.IP".lower(), "robin@n0.ms", "kvasir@i.am.loveless",  "andrew@i.am.loveless", "zero-one@netadmin.localhost", "joey@goes.rawr", "me@it.wasnt.me"]
     count = 0
     quotlist = []
+    
     
     def connectionMade(self): # What happens when bot first connects
         irc.IRCClient.connectionMade(self)
@@ -35,7 +36,7 @@ class Bot(irc.IRCClient):
 
     def connectionLost(self, reason): # What happens when bot loses connection
         irc.IRCClient.connectionLost(self, reason)
-        print("[disconnected at %s]" % time.asctime(time.localtime(time.time())))
+        print("[disconnected at %s]" % time.asctime(time.localtime	(time.time())))
 
     def signedOn(self): # What happens when bot has connected
         self.msg("NickServ", "identify HamsterBot swagonball") # Basic Nickserv identify
@@ -44,8 +45,8 @@ class Bot(irc.IRCClient):
   #          time.sleep(5)
    #         self.setNick("HamsterBot")
     #        self.msg("NickServ", "identify swagonball")
-        self.join("#TheGrammarNaziBoners", "#Programming") #connect to channel
-	self.join("#dino")
+        self.join("#TheGrammarNaziBoners") #connect to channel
+        self.join("#dino")
 
     def joined(self, channel): # What happens when bot joins a channel
         print("[I have joined %s]" % channel)
@@ -58,7 +59,7 @@ class Bot(irc.IRCClient):
         print("%s:<%s> %s" % (channel, user, msg)) # Show the message in console
         capsIntact = msg
         msg = msg.lower()
-        if swag[1].lower() in self.opersh or (channel.lower() == "#dino" or channel.lower() == "dino"): # if the user is in the oper list
+        if swag[1].lower() in self.opersh or channel.lower() == "#dino": # if the user is in the oper list
             admin = 1 
         else: 
             admin = 0
@@ -66,10 +67,24 @@ class Bot(irc.IRCClient):
             pm = 1 
         else:
             pm = 0
+        if channel == "#thegrammarnaziboners":
+            tstchan = 1
+        else:
+            tstchan = 0
+            
+        insult_ = True
+        fibo_ = True
+        choose_ = True
+        dict_ = True
+        wiki_ = True
+        tz_ = True
+        wz_ = True
+        rule_ = True
+        convert_ = True
+        flist = {'insult': insult_, 'fibo': fibo_, 'choose': choose_, 'dict': dict_, 'wiki': wiki_, 'wz': wz_,  'tz': tz_, 'rule': rule_, 'convert': convert_}
+
         
-        if msg.startswith("~die"): # and admin == 1:
-            #message = "", user, "killed me"
-            #self.quit(message = "ded")
+        if msg.startswith("~die"): 
             try:
                 if admin == 1:                    
                     if user.lower() in self.azi:
@@ -81,6 +96,11 @@ class Bot(irc.IRCClient):
             except:
                 self.notice(user, "You are not authorized to perform this command.")
                 print("%s attempted to kill me!" % user)
+        elif msg.startswith("~set ") and swag.lower() == "hamster@alpa.ca":
+            sendLine("MODE +B %s" % self.nickname)
+        elif msg.startswith("~stop") and admin == 1:
+            sys.exit(0)
+            self.quit()
         elif msg.startswith("~ghost ") and admin == 1:
             msg = msg.split()
             self.msg("Nickserv", "ghost %s swagonball" % msg[1])
@@ -91,6 +111,9 @@ class Bot(irc.IRCClient):
                     i = int(msg[1]) 
                     chan = self.chanlist[i]
                     self.join(chan) #why doesnt this work nvm it does
+                elif msg[1] == "joinall" or msg[1] == "all":
+                    for item in self.chanlist:
+                         self.join(item)
                 else:
                     self.join(msg[1])
             except:
@@ -98,14 +121,14 @@ class Bot(irc.IRCClient):
                     self.notice(user, "You are not authorized to perform this command.")
                 else:
                     self.say(channel, "-_-")
-        elif msg.startswith("~bye"): # and admin == 1:
+        elif msg.startswith("~bye"): 
             try:
                 if admin == 1:
                     self.part(channel)
             except:
-                self.notice(user, "You are not authorized to perform this command.")
+                self.notice(user, "You are not authorized to perform 	this command.")
                 print("%s attempted to use command ~bye." % user)
-        elif msg.startswith("~nick"): # and admin == 1:
+        elif msg.startswith("~nick"): 
             try:
                 if admin == 1:
                     msg = msg.split(' ')
@@ -113,6 +136,33 @@ class Bot(irc.IRCClient):
             except:
                 self.notice(user, "You are not authorized to perform this command.")
                 print("%s tried to change my nick" % user)
+        elif msg.startswith("~toggle ") and admin == 1:
+            msg = msg.split()
+            if len(msg) == 3:
+                if flist.has_key(msg[1]):
+                    funct = msg[1].strip()
+                    if msg[2].strip() == "on" or msg[2] == '1':
+                        flist[funct] = True
+                    elif msg[2].strip() == 'off' or msg[2] == '0':
+                        flist[funct] = False             
+                    elif msg[2] == 'not':
+                        flist[funct] = not flist[funct]
+                    else:
+                        self.notice(user, "Values accepted: on/off or 1/0")
+                else:
+                    self.notice(user, "No function found with that name or function may not be switched on/off")
+            elif len(msg) == 2:
+                if msg[1] == 'help':
+                    self.notice(user, "The following functions may be switched on/off: insult, choose, convert, dict, fibo, rule, tz, wz, wiki")
+                elif msg[1] == 'is_on':
+                    is_on = []
+                    for key, value in flist.iteritems():                    
+                        if value == True:
+                            is_on.append(key)
+                    self.notice(user, "The following functions are on: %r" % is_on)
+            else:
+                self.notice(user, "Toggle takes 2 arguments. Do ~toggle help for functions that may be toggled on/off")
+                
         elif msg.startswith("~say ") and admin == 1:
             msg = msg[5:]
             self.say(channel, msg)
@@ -120,22 +170,22 @@ class Bot(irc.IRCClient):
             msg = msg[6:]
 #           bs.notes(str(msg))
             self.notice(user, notes(str(msg)))
-        elif msg.startswith(".insult"):
+        elif msg.startswith(".insult ") and insult_ == True:
             msg = msg.split(' ')
             #nick = msg[1]                
             try:
                 if msg[1].lower() in self.azi:
                     self.say(channel, random.choice(azi_insults))
                 elif msg[1].lower() == "?roulette":
-                    self.say(channel, "%s %s" % (user, random.choice(insults)))
+                    self.say(channel, "%s, %s" % (user, random.choice(insults)))
                 else:
-                    insult = "%s %s" % (msg[1], random.choice(insults))
+                    insult = "%s, %s" % (msg[1], random.choice(insults))
                     self.say(channel, insult)
             except IndexError:
                 self.say(channel, random.choice(insults))
-        elif msg.startswith(".inslut"):
+        elif msg.startswith(".inslut") and flist['insult'] == True:
             msg = msg.split(' ')
-            insult = "%s %s" % (user, random.choice(insults))
+            insult = "%s, %s" % (user, random.choice(insults))
             self.say(channel, insult)
         elif msg.startswith(".halp") or msg.startswith(".help"):
             try:
@@ -147,36 +197,41 @@ class Bot(irc.IRCClient):
         elif msg.startswith("~~"):
             msg = msg.strip("~~")
             exec(msg)
-        elif msg.startswith(".choose "):
+        elif msg.startswith(".choose ") and flist['choose'] == True:
             msg = msg[8:]
-            re.sub("or*", '', msg)
+#           re.sub("or*", '', msg)
+            
             msg = msg.split(",")
-            self.msg(channel, "%s: %s" % (user, random.choice(msg).strip()))
-        elif msg.startswith(".wiki "): #broken wikipedia feature
+            msg = random.choice(msg)
+            words = msg.split(' ')
+            if words[0] == 'or' and len(words) > 1:
+                msg = msg.replace('or ','')
+            self.msg(channel, "%s: %s" % (user, msg.strip()))
+        elif msg.startswith(".wiki ") and flist['wiki'] == True: #broken wikipedia feature
             msg = msg[6:]
             msg = msg.replace(' ', '_')
             self.msg(channel, str(wiki(str(msg))))
-        elif msg.startswith(".dict "): #dictionary feature
+        elif msg.startswith(".dict ") and flist['dict'] == True: #dictionary feature
  #           msg = capsIntact
             msg = msg[6:]
             self.msg(channel, dict(msg))
-        elif msg.startswith(".tz "): #timezone feature
+        elif msg.startswith(".tz ") and flist['tz'] == True: #timezone feature
             msg = msg[4:]
             self.msg(channel, tz(msg))
-        elif msg.startswith(".wz "): #weatherbot feature
+        elif msg.startswith(".wz ") and flist['wz'] == True: #weatherbot feature
             msg = msg[4:]
             self.msg(channel, wz(msg))
         elif msg.startswith(".gay"):
             self.msg(channel, "%s: http://blog.okcupid.com/index.php/gay-sex-vs-straight-sex" % user)
-        elif msg.startswith(".rule "):
+        elif msg.startswith(".rule ") and flist['rule'] == True:
             msg = msg.split()
             self.msg(channel, rules((msg[1].strip())))
-        elif msg.startswith(".fibo"):
+        elif msg.startswith(".fibo") and flist['fibo'] == True: 
             msg = msg.split(' ')
             num = msg[1]
             i = fib2(int(num))
             self.msg(channel, str(i))
-        elif msg.startswith(".convert"):
+        elif msg.startswith(".convert") and flist['convert'] == True: 
             msg = msg.split(' ')
             if convert(msg).startswith('S') or convert(msg).startswith('N'):
                 if '::' in convert(msg):
@@ -191,8 +246,8 @@ class Bot(irc.IRCClient):
                 self.msg(channel, convert(msg))
 
     def action(self, user, channel, msg): #What happens with a /me
-        user = user.split('!', 1)[1] # Turn user!ident@host into nickname
-        print("%s:*%s %s" % (channel, user, msg))
+        user = user.split('!', 1)[0] # Turn user!ident@host into nickname
+        print("%s:* %s %s" % (channel, user, msg))
 
     def alterCollidedNick(self, nickname) : #Changes nick if nick is taken
         return nickname + "_not" + str(random.randint(1,1337))
