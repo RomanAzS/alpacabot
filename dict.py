@@ -65,14 +65,14 @@ def dictionary(msg):
             try:
                 entry2 = data[0][2][0]
                 entryTestLen = len(entry1) + len(entry2)
-                if entryTestLen > 335:
+                if entryTestLen > 420:
                     entry1 = entry1
                 else:
                     entry1 = "[1]%s. [2]%s" % (entry1, entry2)
                     try:
                         entry3 = data[0][3][0]
                         entryTestLen = len(entry1) + len(entry3)
-                        if entryTestLen > 335:
+                        if entryTestLen > 420:
                             entry1 = entry1
                         else:
                             entry1 = "%s. [3]%s" % (entry1, entry3)
@@ -105,4 +105,4 @@ def dictionary(msg):
         return definition.encode('ascii', 'ignore')
 
     except:
-        return "u dun goofed"
+        return "Error: your argument is invalid."

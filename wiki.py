@@ -45,7 +45,7 @@ def wiki(msg):
             except:
                 resp = d[0].strip()
             return resp.strip()
-    except HTTPError:
+    except urllib2.HTTPError:
             return "Error: the requested wikipedia page cannot be found."
     except: 
             return "An error occured."
