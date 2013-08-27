@@ -5,21 +5,30 @@ def whattodo(msg, user):
     if msgsplt[0] == 'all':
         return allprefixes(lines)
     elif msgsplt[0] == "help":
-            return "Add your bot's prefixes with ':prefixes add <botname> <prefixes>'. Please seperate multiple prefixes with a space."
+            return "Add your bot's prefixes with ':prefixes add <botname> <prefixes>'. Please seperate multiple prefixes with a space. Look for prefixes & bots with ':prefixes bots' and ':prefixes prefix'."
 
     else:
         msg = msg.split()
-        del msg[0]
-        del msg[0]
+        # del msg[0]
+        # del msg[0]
         
         if msgsplt[0] == "add": 
+            del msg[0]
+            del msg[0]
             return addprefix(msgsplt[1], msg, user, target, lines)
     #        target.write("%s\t%s\t%s" % (prefix, bot, user))
     #        return "Added"
-        elif msgsplt[0] == "prefix":
-            return searchprefix(lines, msgsplt[1], target)
-        elif msgsplt[0] == "bots":
-            return searchbots(lines, msgsplt[1], target)
+        elif msgsplt[0] == "prefix" or msgsplt[0] == "prefixes":
+            if len(msgsplt) > 1: 
+                return searchprefix(lines, msgsplt[1], target)
+            else:
+                return allprefixes(lines, target)
+        elif msgsplt[0] == "bots" or msgsplt[0] == "bot":
+            if len(msgsplt) > 1:
+                return searchbots(lines, msgsplt[1], target)
+            else:
+                return allbots(lines, target)
+            
             
 def addprefix(bot, prefix, user, target, lines):
     for item in prefix:
@@ -62,10 +71,21 @@ def searchbots(lines, query, target):
             output = ('%s %s' %(output, item[0]))
     return output
     
-def allprefixes(lines):
+def allprefixes(lines, target):
+    target.close()
     prefixes = []
     for item in lines:
         items = item.split("\t")
         if items[0] not in prefixes:
             prefixes.append(items[0])
-    return "The following prefixes are in use: %s" % ' '.join(prefixes)
+    return "The following prefixes are in use: %s" % ' '.join(prefixes) + ". Do ':prefixes prefix <prefix>' to see which bots have that prefix."
+    
+def allbots(lines, target):
+    target.close()
+    bots = []
+    for item in lines: 
+        items = item.split("\t")
+        if items[1] not in bots:
+            bots.append(items[1])
+    return "The following bots have prefixes in prefixbot: %s" % ', '.join(bots) + ". Do ':prefixes bots <botname>' to see the prefixes entered for a bot."
+    
