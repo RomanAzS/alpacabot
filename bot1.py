@@ -10,7 +10,9 @@ from rules import rulesOfTheInternet as rules
 from convert import convert 
 from dict import dictionary as dict
 from tz import tz 
-from wz import wz
+from wz import wz 
+from prefixes import whattodo
+#from botlast import makelist, append, last
 import bs
 import re
 import time, sys
@@ -22,7 +24,7 @@ class Bot(irc.IRCClient):
     nickname = "alpacabot" # Nickname of the bot
     realname = "Hamster Bot" # Real name field, can contain spaces
     username = "HamsterBot" # Username/Ident
-    chanlist = ["#TheGrammarNaziBoners", "#LGBTeens", "#programming", "#nu", "#SHARKY'sDrugDen"]
+    chanlist = ["#TheGrammarNaziBoners", "#LGBTeens", "#programming", "#nu", "#SHARKY'sDrugDen", "#justchat"]
     azi = ["hamster", "hammy", "azi", "legolas", "smeagol", "dinoshi", "faramir", "thranduil", "sharky"]
     opers = ["hamster", "hammy", "azi", "legolas", "smeagol", "dinoshi", "neoinr", "neoite", "ritsuka", "kvasir"]
     opersh = ["hamster@haters.gon.hate","hamster@alpa.ca",  "azi@haters.gon.hate", "Azi@F2D81641.F516A8C9.8D5014A8.IP".lower(), "robin@n0.ms", "kvasir@i.am.loveless",  "andrew@i.am.loveless", "zero-one@netadmin.localhost", "joey@goes.rawr", "me@it.wasnt.me"]
@@ -50,6 +52,7 @@ class Bot(irc.IRCClient):
 
     def joined(self, channel): # What happens when bot joins a channel
         print("[I have joined %s]" % channel)
+#        makelist(channel)
 #	self.me("#LGBTeens", "dinosaurs")
 
     def privmsg(self, user, channel, msg): # What happens when bot gets a message
@@ -58,15 +61,18 @@ class Bot(irc.IRCClient):
         user = user.split('!', 1)[0] # Turn user!ident@host into nickname
         print("%s:<%s> %s" % (channel, user, msg)) # Show the message in console
         capsIntact = msg
+        if channel == self.nickname: # Check if it's a private message
+            pm = 1 
+        else:
+            pm = 0
+#            append(channel, user, msg)
+            
         msg = msg.lower()
         if swag[1].lower() in self.opersh or channel.lower() == "#dino": # if the user is in the oper list
             admin = 1 
         else: 
             admin = 0
-        if channel == self.nickname: # Check if it's a private message
-            pm = 1 
-        else:
-            pm = 0
+        
         if channel == "#thegrammarnaziboners":
             tstchan = 1
         else:
@@ -99,7 +105,6 @@ class Bot(irc.IRCClient):
         elif msg.startswith("~set ") and swag.lower() == "hamster@alpa.ca":
             sendLine("MODE +B %s" % self.nickname)
         elif msg.startswith("~stop") and admin == 1:
-            sys.exit(0)
             self.quit()
         elif msg.startswith("~ghost ") and admin == 1:
             msg = msg.split()
@@ -170,6 +175,10 @@ class Bot(irc.IRCClient):
             msg = msg[6:]
 #           bs.notes(str(msg))
             self.notice(user, notes(str(msg)))
+        elif msg.startswith(":prefixes "):
+            msg = msg[10:]
+            self.say(channel, whattodo(msg, user))
+            
         elif msg.startswith(".insult ") and insult_ == True:
             msg = msg.split(' ')
             #nick = msg[1]                
@@ -194,9 +203,9 @@ class Bot(irc.IRCClient):
                     self.notice(user, "Restricted commands: ~die, ~bye, ~donut <channel>, ~nick <newnick>")
             except:
                     self.notice(user, "Commands: .help, .about, .insult <user>, .fibo, .convert <conversion> <numbers>")
-        elif msg.startswith("~~"):
-            msg = msg.strip("~~")
-            exec(msg)
+#       elif msg.startswith("~~"):
+#           msg = msg.strip("~~")
+#           exec(msg)
         elif msg.startswith(".choose ") and flist['choose'] == True:
             msg = msg[8:]
 #           re.sub("or*", '', msg)
@@ -207,6 +216,11 @@ class Bot(irc.IRCClient):
             if words[0] == 'or' and len(words) > 1:
                 msg = msg.replace('or ','')
             self.msg(channel, "%s: %s" % (user, msg.strip()))
+#        elif msg.startswith(".last"):
+#            msg = msg[5:]
+#            list = last(channel, msg)
+#            for item in list:
+#                self.msg(user, item)
         elif msg.startswith(".wiki ") and flist['wiki'] == True: #broken wikipedia feature
             msg = msg[6:]
             msg = msg.replace(' ', '_')
