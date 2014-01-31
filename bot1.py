@@ -25,9 +25,9 @@ class Bot(irc.IRCClient):
     realname = "Hamster Bot" # Real name field, can contain spaces
     username = "HamsterBot" # Username/Ident
     chanlist = ["#TheGrammarNaziBoners", "#LGBTeens", "#programming", "#nu", "#SHARKY'sDrugDen", "#justchat"]
-    azi = ["hamster", "hammy", "azi", "legolas", "smeagol", "dinoshi", "faramir", "thranduil", "sharky"]
+    azi = ["hamster", "hammy", "azi", "legolas", "smeagol", "dinoshi", "faramir", "thranduil", "sharky", "kojiro"]
     opers = ["hamster", "hammy", "azi", "legolas", "smeagol", "dinoshi", "neoinr", "neoite", "ritsuka", "kvasir"]
-    opersh = ["hamster@haters.gon.hate","hamster@alpa.ca",  "azi@haters.gon.hate", "Azi@F2D81641.F516A8C9.8D5014A8.IP".lower(), "robin@n0.ms", "kvasir@i.am.loveless",  "andrew@i.am.loveless", "zero-one@netadmin.localhost", "joey@goes.rawr", "me@it.wasnt.me"]
+    opersh = ["hamster@haters.gon.hate","hamster@alpa.ca",  "azi@haters.gon.hate", "Azi@F2D81641.F516A8C9.8D5014A8.IP".lower(), "robin@n0.ms", "kvasir@i.am.loveless",  "andrew@i.am.loveless", "zero-one@netadmin.localhost", "joey@goes.rawr", "me@it.wasnt.me", "lion@goes.rawr", "azi@alpaca"]
     count = 0
     quotlist = []
     
@@ -41,7 +41,10 @@ class Bot(irc.IRCClient):
         print("[disconnected at %s]" % time.asctime(time.localtime	(time.time())))
 
     def signedOn(self): # What happens when bot has connected
-        self.msg("NickServ", "identify HamsterBot swagonball") # Basic Nickserv identify
+        p = open("botpass.txt")
+        self.password = p.read()
+        p.close()
+        self.msg("NickServ", "identify HamsterBot %s" % self.password) # Basic Nickserv identify
 #        if self.nickname != "HamsterBot":
  #           self.msg("NickServ", "ghost HamsterBot swagonball")
   #          time.sleep(5)
@@ -103,9 +106,12 @@ class Bot(irc.IRCClient):
                 self.notice(user, "You are not authorized to perform this command.")
                 print("%s attempted to kill me!" % user)
         elif msg.startswith("~set ") and swag.lower() == "hamster@alpa.ca":
-            sendLine("MODE +B %s" % self.nickname)
+#            self.sendLine("MODE %s +B %s" % (self.nickname, self.nickname))
+            self.mode(self.nickname, True, 'B', limit=None, user=self.nickname, mask=None)
         elif msg.startswith("~stop") and admin == 1:
             self.quit()
+        elif msg.startswith("~id") and (admin == 1 or user.lower == "Kojiro"):
+            self.msg("Nickserv", "identify hamsterbot %s" % self.password)
         elif msg.startswith("~ghost ") and admin == 1:
             msg = msg.split()
             self.msg("Nickserv", "ghost %s swagonball" % msg[1])

@@ -24,14 +24,12 @@ def wz(query):
         place = response['data']['request'][0]['query']
         type = response['data']['request'][0]['type']
 		
-#        print degC, degF, mbar, humi, winddir, windKPH, windMPH, wzdescr
- #       print type, place
         kPa = mbar2kpa(mbar)
 		
-        info = "\002%s %s:\002 \x1fConditions:\x1f %s, %sC(%sF) \x1fWind:\x1f %s at %s kph(%s mph) \x1fHumidity:\x1f %s%% \x1fAtmospheric Pressure:\x1f %s mbar(%s kPa)" % (type, place, wzdescr, degC, degF, winddir, windKPH, windMPH, humi, mbar, kPa)
+        info = "\002Weather in %s %s:\002 \x1fConditions:\x1f %s, %sC(%sF) \x1fWind:\x1f %s at %s kph(%s mph) \x1fHumidity:\x1f %s%% \x1fAtmospheric Pressure:\x1f %s mbar(%s kPa)" % (type, place, wzdescr, degC, degF, winddir, windKPH, windMPH, humi, mbar, kPa)
 		
         return info.encode('ascii', 'ignore')
-
+		
     except:
         return "Error: your argument is invalid."
 		
@@ -39,3 +37,4 @@ def mbar2kpa(mbar):
     mbar = int(mbar)
     kpa = mbar * .1
     return str(kpa)
+
